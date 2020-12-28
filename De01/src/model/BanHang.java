@@ -40,6 +40,10 @@ public class BanHang implements Serializable {
     public void setSo(int so) {
         this.so = so;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return khachHang.getHoTen() + "\t" + hang.getTen() + "\t" + so + "\t" + hang.getGia() + '\n';
+    }
+
 }

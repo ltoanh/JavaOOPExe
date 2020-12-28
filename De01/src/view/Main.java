@@ -18,6 +18,8 @@ public class Main extends javax.swing.JFrame {
         jTabbedPane1.add(fkh, "QL Khach hang");
         FrBanHang fbh = new FrBanHang();
         jTabbedPane1.add(fbh, "QL Ban Hang");
+        FrHoaDon fhd = new FrHoaDon();
+        jTabbedPane1.add(fhd, "QL Hoa don");
     }
 
     /**
