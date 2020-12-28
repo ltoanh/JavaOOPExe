@@ -40,6 +40,10 @@ public class MatHang implements Serializable{
     public String getTen() {
         return ten;
     }
+
+    public float getGia() {
+        return gia;
+    }
     
     
 }
