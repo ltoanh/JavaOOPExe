@@ -54,6 +54,7 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
     private void clearData() {
         tfViTri.setText("");
         tfSo.setText("");
+        tfFind.setText("");
     }
 
     private boolean canInitData() {
@@ -107,18 +108,17 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
         return true;
     }
 
-    private void sortByTen(){
-        Collections.sort(listPC, (pc1, pc2) -> {
-            return pc1.getNhanVien().getTen().compareTo(pc2.getNhanVien().getTen());
-        });
-        showData(listPC);
-    }
-    
-    private void sortByNgay(){
-        Collections.sort(listPC, (pc1, pc2) -> {
-            return pc2.getNgay() > pc1.getNgay() ? 1 : pc2.getNgay() < pc1.getNgay() ? -1 : 0;
-        });
-        showData(listPC);
+    private boolean canFind(){
+        try{
+            if(listPC.size() == 0)
+                throw new IOException();
+            return true;
+        } catch(IOException e){
+            JOptionPane.showMessageDialog(null, "Khong co du lieu");
+            buttonGroup1.clearSelection();
+            clearData();
+            return false;
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,6 +130,7 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -147,6 +148,10 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
         jLabel5 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
+        jLabel6 = new javax.swing.JLabel();
+        tfFind = new javax.swing.JTextField();
+        jRadioButton3 = new javax.swing.JRadioButton();
+        jRadioButton4 = new javax.swing.JRadioButton();
         jButton4 = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -248,11 +253,39 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
 
         buttonGroup1.add(jRadioButton1);
         jRadioButton1.setText("Ten NV");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("Ngay tham gia");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Xep");
+        jLabel6.setText("Tim kiem:");
+
+        buttonGroup1.add(jRadioButton3);
+        jRadioButton3.setText("Ten NV");
+        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton3ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(jRadioButton4);
+        jRadioButton4.setText("Ten DA");
+        jRadioButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Hien thi");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -264,45 +297,64 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(177, 177, 177)
-                                .addComponent(jButton1))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
                         .addComponent(jRadioButton1)
                         .addGap(29, 29, 29)
-                        .addComponent(jRadioButton2)
+                        .addComponent(jRadioButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                        .addComponent(tfFind, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButton4)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(24, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4)
+                        .addGap(86, 86, 86))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(68, 68, 68)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jRadioButton1)
+                            .addComponent(jRadioButton2))
+                        .addGap(5, 5, 5)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(tfFind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jRadioButton3)
+                                .addComponent(jRadioButton4))))
+                    .addComponent(jButton1)
                     .addComponent(jButton4))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -359,8 +411,8 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
             JOptionPane.showMessageDialog(null, "NV da tham gia DA nay");
             isOk = false;
         }
-        
-        if(isOk){
+
+        if (isOk) {
             NhanVien nhanVien = findNhanVienByMa(maNV);
             DuAn duAn = findDuAnByMa(maDA);
             BangPhanCong pc = new BangPhanCong(nhanVien, duAn, viTri, ngay);
@@ -371,17 +423,65 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        listPC = IOFile.readFromFile(filePC);
+        Collections.sort(listPC, (pc1, pc2) -> {
+            return pc1.getNhanVien().getTen().compareTo(pc2.getNhanVien().getTen());
+        });
+        showData(listPC);
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        listPC = IOFile.readFromFile(filePC);
+        Collections.sort(listPC, (pc1, pc2) -> {
+            return pc2.getNgay() > pc1.getNgay() ? 1 : pc2.getNgay() < pc1.getNgay() ? -1 : 0;
+        });
+        showData(listPC);
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+        if(canFind()){
+            String name = "(.*)"+tfFind.getText().replaceAll("\\s+", " ").trim()+"(.*)";
+            model.setRowCount(0);
+            for(BangPhanCong b : listPC){
+                if(b.getNhanVien().getTen().matches(name)){
+                    model.addRow(b.toObject());
+                }
+            }
+            buttonGroup1.clearSelection();
+            clearData();
+        }
+    }//GEN-LAST:event_jRadioButton3ActionPerformed
+
+    private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
+        if(canFind()){
+            String name = "(.*)"+tfFind.getText().replaceAll("\\s+", " ").trim()+"(.*)";
+            model.setRowCount(0);
+            for(BangPhanCong b : listPC){
+                if(b.getDuAn().getTen().matches(name)){
+                    model.addRow(b.toObject());
+                }
+            }
+            buttonGroup1.clearSelection();
+            clearData();
+        }
+    }//GEN-LAST:event_jRadioButton4ActionPerformed
+
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-       if(jRadioButton1.isSelected()){
-           sortByTen();
-       } else if(jRadioButton2.isSelected()){
-           sortByNgay();
-       }
+        try{
+            listPC = IOFile.readFromFile(filePC);
+            if(listPC.size() == 0)
+                throw new IOException();
+            showData(listPC);
+        } catch(IOException e){
+            JOptionPane.showMessageDialog(null, "Khong co du lieu hien thi");
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JComboBox<String> cbDA;
     private javax.swing.JComboBox<String> cbNV;
     private javax.swing.JButton jButton1;
@@ -393,11 +493,15 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField tfFind;
     private javax.swing.JTextField tfSo;
     private javax.swing.JTextField tfViTri;
     // End of variables declaration//GEN-END:variables
@@ -405,7 +509,6 @@ public class FrPhanCong extends javax.swing.JPanel implements View {
     @Override
     public <T> void addTo(T t) {
         listPC.add((BangPhanCong) t);
-        showData(listPC);
     }
 
     @Override
