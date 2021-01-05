@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package view;
 
 /**
@@ -14,16 +19,13 @@ public class Main extends javax.swing.JFrame {
         setSize(950, 600);
         
         FormMatHang fmh = new FormMatHang();
-        tab.add(fmh, "QL Mat hang");
+        tab.add(fmh, "QL mat hang");
         
         FormNhanVien fnv = new FormNhanVien();
-        tab.add(fnv, "QL Nhan vien");
+        tab.add(fnv, "QL nhan vien");
         
         FormBanHang fbh = new FormBanHang();
-        tab.add(fbh, "QL Ban hang");
-        
-        FormTinhCong ftc = new FormTinhCong();
-        tab.add(ftc, "QL Tinh cong");
+        tab.add(fbh, "QL ban hang");
     }
 
     /**
@@ -43,11 +45,11 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tab, javax.swing.GroupLayout.DEFAULT_SIZE, 944, Short.MAX_VALUE)
+            .addComponent(tab, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tab, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+            .addComponent(tab, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
 
         pack();

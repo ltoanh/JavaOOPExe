@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package io;
 
 import java.io.File;
@@ -21,7 +26,7 @@ public class IOFile {
         File file = new File(fileName);
         try {
             file.createNewFile();
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
             oos.writeObject(list);
             oos.close();
         } catch (IOException ex) {

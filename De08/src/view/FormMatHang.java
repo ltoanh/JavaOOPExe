@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package view;
 
 import io.IOFile;
@@ -20,49 +25,50 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
      */
     private DefaultTableModel model;
     private List<MatHang> list;
-    private final String file = "MH.TXT";
-
+    private final String FILE = "MH.TXT";
+    
     public FormMatHang() {
         initComponents();
         String colsString[] = {"Ma MH", "Ten", "Nhom", "Gia mua", "Gia ban"};
         model = new DefaultTableModel(colsString, 0);
         table.setModel(model);
-
-        btnFalse();
+        
         initListData();
+        btnFalse();
     }
-
+    
     private void initListData() {
         list = new ArrayList<>();
-        list = IOFile.readFile(file);
-        if (list.size() > 0) {
+        list = IOFile.readFile(FILE);
+        if (!list.isEmpty()) {
             showData(list, model);
-            int ma = list.get(list.size() - 1).getMa() + 1;
+            int ma = list.get(list.size() - 1).getMaHang() + 1;
             MatHang.setsMa(ma);
         }
     }
-
+    
     private void clearData() {
         tfTen.setText("");
-        tfMua.setText("");
-        tfBan.setText("");
+        tfGiaBan.setText("");
+        tfGiaMua.setText("");
     }
-
+    
     private void btnTrue() {
-        btnHuy.setEnabled(true);
         btnLuu.setEnabled(true);
+        btnHuy.setEnabled(true);
     }
-
+    
     private void btnFalse() {
-        btnHuy.setEnabled(false);
         btnLuu.setEnabled(false);
+        btnHuy.setEnabled(false);
     }
-
-    private String stringInputFormat(String s) {
+    
+    private String formatInputString(String s) {
         return s.replaceAll("\\s+", " ").trim();
+        
     }
-
-    private boolean isCorrectFormat(String s, String regex) {
+    
+    private boolean isFormattedString(String s, String regex) {
         String checkArr[] = s.split(" ");
         for (String check : checkArr) {
             if (!check.matches(regex)) {
@@ -91,9 +97,9 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
         btnLuu = new javax.swing.JButton();
         btnHuy = new javax.swing.JButton();
         tfTen = new javax.swing.JTextField();
+        tfGiaMua = new javax.swing.JTextField();
+        tfGiaBan = new javax.swing.JTextField();
         cbNhom = new javax.swing.JComboBox<>();
-        tfMua = new javax.swing.JTextField();
-        tfBan = new javax.swing.JTextField();
         btnThem = new javax.swing.JButton();
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -133,37 +139,42 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
             }
         });
 
-        cbNhom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "hang thoi trang", "hang tieu dung", "hang dien may", "hang gia dung" }));
+        cbNhom.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hang thoi trang", "Hang tieu dung", "Hang dien may", "Hang gia dung" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tfTen)
-                    .addComponent(cbNhom, 0, 234, Short.MAX_VALUE)
-                    .addComponent(tfMua)
-                    .addComponent(tfBan))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfTen, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfGiaBan, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(tfGiaMua)
+                                .addComponent(cbNhom, 0, 264, Short.MAX_VALUE)))))
+                .addContainerGap(18, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(57, 57, 57)
+                .addGap(63, 63, 63)
                 .addComponent(btnHuy)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLuu)
-                .addGap(58, 58, 58))
+                .addGap(70, 70, 70))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tfTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -171,19 +182,19 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cbNhom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(tfMua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                    .addComponent(tfGiaMua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(tfBan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                    .addComponent(tfGiaBan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLuu)
                     .addComponent(btnHuy))
-                .addGap(28, 28, 28))
+                .addContainerGap())
         );
 
         btnThem.setText("Them");
@@ -202,97 +213,115 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(191, 191, 191)
+                        .addGap(157, 157, 157)
                         .addComponent(btnThem)))
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
+                        .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
+                        .addGap(36, 36, 36)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnThem)))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        clearData();
+        // TODO add your handling code here:
         btnTrue();
+        clearData();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
-        String ten = "", mua = "", ban = "";
+        // TODO add your handling code here:
+        String ten = "", nhom = "";
         float giaMua = 0, giaBan = 0;
         boolean isOk = true;
         try {
-            ten = stringInputFormat(tfTen.getText());
+            ten = formatInputString(tfTen.getText());
             if (ten.length() == 0) {
                 throw new IOException();
             }
             String regexTen = "^[a-zA-Z0-9]+$";
-            if (!isCorrectFormat(ten, regexTen)) {
+            if (!isFormattedString(ten, regexTen)) {
                 throw new InputMismatchException();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Ten khong de trong");
+            JOptionPane.showMessageDialog(null, "ten khong de trong");
             isOk = false;
         } catch (InputMismatchException e) {
-            JOptionPane.showMessageDialog(null, "Ten sai dinh dang");
+            JOptionPane.showMessageDialog(null, "ten chi nhap ky tu chu va so");
             isOk = false;
         }
+        
         try {
-            mua = stringInputFormat(tfMua.getText());
-            if (mua.length() == 0) {
+            nhom = (String) cbNhom.getSelectedItem();
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "nhom khong co du lieu");
+            isOk = false;
+        }
+        
+        try {
+            String giaMuaString = formatInputString(tfGiaMua.getText());
+            if (giaMuaString.length() == 0) {
                 throw new IOException();
             }
-            giaMua = Float.parseFloat(mua);
-            if (giaMua < 0) {
-                throw new NumberFormatException();
+            giaMua = Float.parseFloat(giaMuaString);
+            if (giaMua <= 0) {
+                throw new InputMismatchException();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Gia mua khong de trong");
+            JOptionPane.showMessageDialog(null, "gia mua khong de trong");
+            isOk = false;
+        } catch (InputMismatchException e) {
+            JOptionPane.showMessageDialog(null, "gia mua phai lon hon 0");
             isOk = false;
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Gia mua sai dinh dang");
+            JOptionPane.showMessageDialog(null, "gia mua nhap sai dinh dang");
             isOk = false;
         }
+        
         try {
-            ban = stringInputFormat(tfBan.getText());
-            if (ban.length() == 0) {
+            String giaBanString = formatInputString(tfGiaBan.getText());
+            if (giaBanString.length() == 0) {
                 throw new IOException();
             }
-            giaBan = Float.parseFloat(ban);
-            if (giaBan < 0) {
-                throw new NumberFormatException();
+            giaBan = Float.parseFloat(giaBanString);
+            if (giaBan <= 0) {
+                throw new InputMismatchException();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Gia ban khong de trong");
+            JOptionPane.showMessageDialog(null, "gia ban khong de trong");
+            isOk = false;
+        } catch (InputMismatchException e) {
+            JOptionPane.showMessageDialog(null, "gia ban phai lon hon 0");
             isOk = false;
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Gia ban sai dinh dang");
+            JOptionPane.showMessageDialog(null, "gia ban nhap sai dinh dang");
             isOk = false;
         }
-        String nhom = (String) cbNhom.getSelectedItem();
+        
         if (isOk) {
-            MatHang mh = new MatHang(ten, nhom, giaMua, giaBan);
-            addToList(list, mh);
-            IOFile.writeFile(file, list);
+            MatHang hang = new MatHang(ten, nhom, giaMua, giaBan);
+            addToList(list, hang);
             clearData();
             btnFalse();
+            IOFile.writeFile(FILE, list);
         }
     }//GEN-LAST:event_btnLuuActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+        // TODO add your handling code here:
         btnFalse();
         clearData();
     }//GEN-LAST:event_btnHuyActionPerformed
@@ -310,11 +339,17 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
-    private javax.swing.JTextField tfBan;
-    private javax.swing.JTextField tfMua;
+    private javax.swing.JTextField tfGiaBan;
+    private javax.swing.JTextField tfGiaMua;
     private javax.swing.JTextField tfTen;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public <T> void addToList(List<T> ls, T t) {
+        ls.add(t);
+        showData(ls, model);
+    }
+    
     @Override
     public <T> void showData(List<T> ls, DefaultTableModel md) {
         md.setRowCount(0);
@@ -323,11 +358,5 @@ public class FormMatHang extends javax.swing.JPanel implements ViewInterface {
                 md.addRow(((MatHang) t).toObjects());
             }
         }
-    }
-
-    @Override
-    public <T> void addToList(List<T> ls, T t) {
-        ls.add(t);
-        showData(ls, model);
     }
 }

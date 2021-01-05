@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
 import java.io.Serializable;
@@ -6,49 +11,36 @@ import java.io.Serializable;
  *
  * @author whiwf
  */
-public class MatHang implements Serializable {
+public class MatHang implements Serializable{
+    private int maHang;
+    private String tenHang, nhomHang;
+    private float giaMua,giaBan;
+    private static int sMa = 1000;
 
-    private int ma;
-    private String ten, nhom;
-    private float giaMua, giaBan;
-    private static int sMa = 1;
-
-    public MatHang(String ten, String nhom, float giaMua, float giaBan) {
-        this.ma = sMa++;
-        this.ten = ten;
-        this.nhom = nhom;
+    public MatHang(String tenHang, String nhomHang, float giaMua, float giaBan) {
+        this.maHang = sMa++;
+        this.tenHang = tenHang;
+        this.nhomHang = nhomHang;
         this.giaMua = giaMua;
         this.giaBan = giaBan;
     }
 
-    public int getMa() {
-        return ma;
+    public int getMaHang() {
+        return maHang;
     }
 
-    public String getTen() {
-        return ten;
+    public String getTenHang() {
+        return tenHang;
     }
 
-    public float getGiaMua() {
-        return giaMua;
-    }
-
-    public float getGiaBan() {
-        return giaBan;
-    }
-
-    
     public static void setsMa(int sMa) {
         MatHang.sMa = sMa;
     }
-
-    public String formatMa() {
-        return String.format("%04d", ma);
-    }
-
-    public Object[] toObjects() {
+    
+    public Object[] toObjects(){
         return new Object[]{
-            formatMa(), ten, nhom, giaMua, giaBan
+            maHang, tenHang, nhomHang, giaMua, giaBan
         };
     }
+    
 }

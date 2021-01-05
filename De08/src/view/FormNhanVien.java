@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package view;
 
 import io.IOFile;
@@ -7,62 +12,63 @@ import java.util.InputMismatchException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import model.NhanVienBanHang;
+import model.NhanVien;
 
 /**
  *
  * @author whiwf
  */
-public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
+public class FormNhanVien extends javax.swing.JPanel implements ViewInterface {
 
     /**
      * Creates new form FormNhanVien
      */
     private DefaultTableModel model;
-    private List<NhanVienBanHang> list;
-    private final String file = "NV.TXT";
-    
+    private List<NhanVien> list;
+    private final String FILE = "NV.TXT";
+
     public FormNhanVien() {
         initComponents();
-        String colsString[] = {"Ma NV", "Ten", "Dia chi", "SDT"};
+        String colsString[] = {"Ma NV", "Ho ten", "Dia chi", "SDT"};
         model = new DefaultTableModel(colsString, 0);
         table.setModel(model);
 
-        btnFalse();
         initListData();
+        btnFalse();
     }
 
     private void initListData() {
         list = new ArrayList<>();
-        list = IOFile.readFile(file);
-        if (list.size() > 0) {
+        list = IOFile.readFile(FILE);
+        if (!list.isEmpty()) {
             showData(list, model);
-            int ma = list.get(list.size() - 1).getMa() + 1;
-            NhanVienBanHang.setsMa(ma);
+            int ma = list.get(list.size() - 1).getMaNV() + 1;
+            NhanVien.setsMa(ma);
         }
     }
 
     private void clearData() {
         tfTen.setText("");
-        tfDiaChi.setText("");
         tfSDT.setText("");
+        tfDiaChi.setText("");
     }
 
     private void btnTrue() {
-        btnHuy.setEnabled(true);
         btnLuu.setEnabled(true);
+        btnHuy.setEnabled(true);
     }
 
     private void btnFalse() {
-        btnHuy.setEnabled(false);
         btnLuu.setEnabled(false);
+        btnHuy.setEnabled(false);
     }
 
-    private String stringInputFormat(String s) {
+    private String formatInputString(String s) {
         return s.replaceAll("\\s+", " ").trim();
+
     }
 
-    private boolean isCorrectFormat(String s, String regex) {
+    private boolean isFormattedString(String s, String regex) {
         String checkArr[] = s.split(" ");
         for (String check : checkArr) {
             if (!check.matches(regex)) {
@@ -71,6 +77,7 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
         }
         return true;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,6 +87,7 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnThem = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -91,7 +99,13 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
         tfTen = new javax.swing.JTextField();
         tfDiaChi = new javax.swing.JTextField();
         tfSDT = new javax.swing.JTextField();
-        btnThem = new javax.swing.JButton();
+
+        btnThem.setText("Them");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -108,11 +122,11 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Them"));
 
-        jLabel1.setText("Ten");
+        jLabel1.setText("Ho ten");
 
         jLabel3.setText("Dia chi");
 
-        jLabel4.setText("So DT");
+        jLabel4.setText("SDT");
 
         btnLuu.setText("Luu");
         btnLuu.addActionListener(new java.awt.event.ActionListener() {
@@ -133,28 +147,32 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tfTen, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                    .addComponent(tfDiaChi)
-                    .addComponent(tfSDT))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfTen, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfSDT, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(63, 63, 63)
                 .addComponent(btnHuy)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLuu)
-                .addGap(57, 57, 57))
+                .addGap(70, 70, 70))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tfTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -162,23 +180,16 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(tfDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(tfSDT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLuu)
                     .addComponent(btnHuy))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap())
         );
-
-        btnThem.setText("Them");
-        btnThem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThemActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -189,98 +200,105 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(173, 173, 173)
+                        .addGap(153, 153, 153)
                         .addComponent(btnThem)))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
+                        .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
+                        .addGap(36, 36, 36)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnThem)))
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+        btnTrue();
+        clearData();
+    }//GEN-LAST:event_btnThemActionPerformed
+
     private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
-        String ten = "", diaChi = "", so = "";
+        // TODO add your handling code here:
+        String ten = "", diaChi = "", SDT = "";
+        float giaMua = 0, giaBan = 0;
         boolean isOk = true;
         try {
-            ten = stringInputFormat(tfTen.getText());
+            ten = formatInputString(tfTen.getText());
             if (ten.length() == 0) {
                 throw new IOException();
             }
             String regexTen = "^[a-zA-Z]+$";
-            if (!isCorrectFormat(ten, regexTen)) {
+            if (!isFormattedString(ten, regexTen)) {
                 throw new InputMismatchException();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Ten khong de trong");
+            JOptionPane.showMessageDialog(null, "ten khong de trong");
             isOk = false;
         } catch (InputMismatchException e) {
-            JOptionPane.showMessageDialog(null, "Ten sai dinh dang");
+            JOptionPane.showMessageDialog(null, "ten chi nhap ky tu chu");
             isOk = false;
         }
+        
         try {
-            diaChi = stringInputFormat(tfDiaChi.getText());
+            diaChi = formatInputString(tfDiaChi.getText());
             if (diaChi.length() == 0) {
                 throw new IOException();
             }
-            String regexDiaChi = "^[a-zA-Z0-9/-]+$";
-            if (!isCorrectFormat(diaChi, regexDiaChi)) {
+            String regexDiaChi = "^[a-zA-Z0-9]+$";
+            if (!isFormattedString(diaChi, regexDiaChi)) {
                 throw new InputMismatchException();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Dia chi khong de trong");
+            JOptionPane.showMessageDialog(null, "dia chi khong de trong");
             isOk = false;
         } catch (InputMismatchException e) {
-            JOptionPane.showMessageDialog(null, "Dia chi sai dinh dang");
+            JOptionPane.showMessageDialog(null, "dia chi chi nhap ky tu chu va so");
             isOk = false;
         }
+        
         try {
-            so = stringInputFormat(tfSDT.getText());
-            if (so.length() == 0) {
+            SDT = formatInputString(tfSDT.getText());
+            if (SDT.length() == 0) {
                 throw new IOException();
             }
-            String regexSo = "^[0-9-]+$";
-            if (!isCorrectFormat(so, regexSo)) {
+            String regexSo = "^[0-9]+$";
+            if (!isFormattedString(SDT, regexSo)) {
                 throw new InputMismatchException();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "So DT khong de trong");
+            JOptionPane.showMessageDialog(null, "SDT khong de trong");
             isOk = false;
         } catch (InputMismatchException e) {
-            JOptionPane.showMessageDialog(null, "So DT sai dinh dang");
+            JOptionPane.showMessageDialog(null, "SDT chi nhap ky tu so");
             isOk = false;
         }
+
         if (isOk) {
-            NhanVienBanHang mh = new NhanVienBanHang(ten, diaChi, so);
-            addToList(list, mh);
-            IOFile.writeFile(file, list);
+            NhanVien nhanVien = new NhanVien(ten, diaChi, SDT);
+            addToList(list, nhanVien);
             clearData();
             btnFalse();
+            IOFile.writeFile(FILE, list);
         }
     }//GEN-LAST:event_btnLuuActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+        // TODO add your handling code here:
         btnFalse();
         clearData();
     }//GEN-LAST:event_btnHuyActionPerformed
-
-    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        clearData();
-        btnTrue();
-    }//GEN-LAST:event_btnThemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -308,8 +326,8 @@ public class FormNhanVien extends javax.swing.JPanel implements ViewInterface{
     public <T> void showData(List<T> ls, DefaultTableModel md) {
         md.setRowCount(0);
         for (T t : ls) {
-            if (t instanceof NhanVienBanHang) {
-                md.addRow(((NhanVienBanHang) t).toObjects());
+            if (t instanceof NhanVien) {
+                md.addRow(((NhanVien) t).toObjects());
             }
         }
     }
