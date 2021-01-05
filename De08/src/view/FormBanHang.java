@@ -1,18 +1,19 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package view;
 
 import io.IOFile;
-import java.io.IOError;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.InputMismatchException;
 import java.util.List;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import model.DanhSachBanHang;
+import model.BangDanhSachBanHang;
 import model.MatHang;
-import model.NhanVienBanHang;
+import model.NhanVien;
 
 /**
  *
@@ -24,93 +25,96 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
      * Creates new form FormBanHang
      */
     private DefaultTableModel model;
+    private List<NhanVien> listNV;
     private List<MatHang> listMH;
-    private List<NhanVienBanHang> listNV;
-    private List<DanhSachBanHang> listBH;
-
-    private final String fileMH = "MH.TXT", fileNV = "NV.TXT", fileBH = "QLBH.TXT";
+    private List<BangDanhSachBanHang> listBH;
+    private final String FILENV = "NV.TXT", FILEMH = "MH.TXT", FILEBH = "QLBH.TXT";
 
     public FormBanHang() {
         initComponents();
-        String cols[] = {"Ten NV", "Ten MH", "So luong"};
-        model = new DefaultTableModel(cols, 0);
+        String colsString[] = {"Ten NV", "Ten MH", "So luong"};
+        model = new DefaultTableModel(colsString, 0);
         table.setModel(model);
 
         listBH = new ArrayList<>();
-
         btnFalse();
     }
 
     private void initCbData() {
         listMH = new ArrayList<>();
-        listMH = IOFile.readFile(fileMH);
-
         listNV = new ArrayList<>();
-        listNV = IOFile.readFile(fileNV);
 
-        try {
-            if (listNV.isEmpty() || listMH.isEmpty()) {
-                throw new IOException();
-            }
+        listMH = IOFile.readFile(FILEMH);
+        listNV = IOFile.readFile(FILENV);
+
+        if (!listMH.isEmpty() && !listNV.isEmpty()) {
             initItemToCb(cbNV, listNV);
             initItemToCb(cbMH, listMH);
             btnTrue();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Du lieu con trong");
         }
     }
 
-    private <T> void initItemToCb(JComboBox cbBox, List<T> ls) {
-        cbBox.removeAllItems();
-        for (T t : ls) {
+    private <T> void initItemToCb(JComboBox cb, List<T> list) {
+        cb.removeAllItems();
+        for (T t : list) {
             if (t instanceof MatHang) {
-                cbBox.addItem(((MatHang) t).formatMa());
-            } else if (t instanceof NhanVienBanHang) {
-                cbBox.addItem(((NhanVienBanHang) t).formatMa());
+                cb.addItem(((MatHang) t).getMaHang());
+            } else if (t instanceof NhanVien) {
+                cb.addItem(((NhanVien) t).getMaNV());
             }
         }
-    }
-
-    private void btnTrue() {
-        btnHuy.setEnabled(true);
-        btnLuu.setEnabled(true);
-    }
-
-    private void btnFalse() {
-        btnHuy.setEnabled(false);
-        btnLuu.setEnabled(false);
     }
 
     private void clearData() {
-        tfSo.setText("");
+        tfSoLuong.setText("");
     }
 
-    private boolean canAddToList(int maNV, int maMH) {
-        for (DanhSachBanHang bh : listBH) {
-            if (bh.getNhanVienBanHang().getMa() == maNV && bh.getMatHang().getMa() == maMH) {
-                return false;
+    private void btnTrue() {
+        btnLuu.setEnabled(true);
+        btnHuy.setEnabled(true);
+    }
+
+    private void btnFalse() {
+        btnLuu.setEnabled(false);
+        btnHuy.setEnabled(false);
+    }
+
+    private String formatInputString(String s) {
+        return s.replaceAll("\\s+", " ").trim();
+
+    }
+
+    private boolean isExistData(int maNV, int maMH) {
+        for (BangDanhSachBanHang banHang : listBH) {
+            if (banHang.getNhanVien().getMaNV() == maNV && banHang.getHang().getMaHang() == maMH) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    private <T> T findByMa(int ma, List<T> ls) {
-        for (T t : ls) {
+    private void updateExistData(int maNV, int maMH, int soLuong) {
+        for (BangDanhSachBanHang banHang : listBH) {
+            if (banHang.getNhanVien().getMaNV() == maNV && banHang.getHang().getMaHang() == maMH) {
+                int curSo = banHang.getSoLuong();
+                banHang.setSoLuong(curSo + soLuong);
+            }
+        }
+    }
+
+    private <T> T findByMa(int ma, List<T> list) {
+        for (T t : list) {
             if (t instanceof MatHang) {
-                if (((MatHang) t).getMa() == ma) {
+                if (((MatHang) t).getMaHang() == ma) {
                     return t;
                 }
-            } else if (t instanceof NhanVienBanHang) {
-                if (((NhanVienBanHang) t).getMa() == ma) {
+            } else if (t instanceof NhanVien) {
+                if (((NhanVien) t).getMaNV() == ma) {
                     return t;
                 }
             }
         }
         return null;
-    }
-
-    private String stringInputFormat(String s) {
-        return s.replaceAll("\\s+", " ").trim();
     }
 
     /**
@@ -123,21 +127,28 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        btnThem = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         btnLuu = new javax.swing.JButton();
         btnHuy = new javax.swing.JButton();
+        tfSoLuong = new javax.swing.JTextField();
         cbNV = new javax.swing.JComboBox<>();
-        tfSo = new javax.swing.JTextField();
-        cbMH = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
-        btnThem = new javax.swing.JButton();
+        cbMH = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
-        rbtnTenNV = new javax.swing.JRadioButton();
-        rbtnTenMH = new javax.swing.JRadioButton();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+
+        btnThem.setText("Them");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -156,7 +167,7 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
 
         jLabel2.setText("Ma NV");
 
-        jLabel3.setText("So luong");
+        jLabel4.setText("So luong");
 
         btnLuu.setText("Luu");
         btnLuu.addActionListener(new java.awt.event.ActionListener() {
@@ -179,24 +190,27 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                .addGap(63, 63, 63)
                 .addComponent(btnHuy)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLuu)
-                .addGap(58, 58, 58))
+                .addGap(70, 70, 70))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel5))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cbMH, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(cbNV, 0, 234, Short.MAX_VALUE)
-                        .addComponent(tfSo)))
-                .addGap(13, 13, 13))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbMH, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(32, 32, 32)
+                        .addComponent(cbNV, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,43 +219,36 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cbNV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(cbMH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
+                .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(tfSo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                    .addComponent(jLabel4)
+                    .addComponent(tfSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLuu)
                     .addComponent(btnHuy))
-                .addGap(28, 28, 28))
+                .addContainerGap())
         );
-
-        btnThem.setText("Them");
-        btnThem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThemActionPerformed(evt);
-            }
-        });
 
         jLabel1.setText("Sap xep theo");
 
-        buttonGroup1.add(rbtnTenNV);
-        rbtnTenNV.setText("Ten NV");
-        rbtnTenNV.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setText("Ten NV");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbtnTenNVActionPerformed(evt);
+                jRadioButton1ActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(rbtnTenMH);
-        rbtnTenMH.setText("Ten MH");
-        rbtnTenMH.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setText("Ten MH");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbtnTenMHActionPerformed(evt);
+                jRadioButton2ActionPerformed(evt);
             }
         });
 
@@ -256,121 +263,97 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(33, 33, 33)
+                                .addGap(10, 10, 10)
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(173, 173, 173)
+                                .addGap(159, 159, 159)
                                 .addComponent(btnThem))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
+                        .addGap(49, 49, 49)
                         .addComponent(jLabel1)
-                        .addGap(41, 41, 41)
-                        .addComponent(rbtnTenNV)
-                        .addGap(58, 58, 58)
-                        .addComponent(rbtnTenMH)))
-                .addContainerGap(56, Short.MAX_VALUE))
+                        .addGap(27, 27, 27)
+                        .addComponent(jRadioButton1)
+                        .addGap(38, 38, 38)
+                        .addComponent(jRadioButton2)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
+                        .addGap(36, 36, 36)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnThem))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(27, 27, 27)
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(rbtnTenNV)
-                    .addComponent(rbtnTenMH))
-                .addContainerGap(48, Short.MAX_VALUE))
+                    .addComponent(jRadioButton1)
+                    .addComponent(jRadioButton2))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
-        int maNV = Integer.parseInt((String) cbNV.getSelectedItem());
-        int maMH = Integer.parseInt((String) cbMH.getSelectedItem());
-        int soLuong = 0;
-        boolean isOk = true;
-        try {
-            if (!canAddToList(maNV, maMH)) {
-                throw new IOException();
-            }
-            try {
-                String so = stringInputFormat(tfSo.getText());
-                if (so.length() == 0) {
-                    throw new IOException();
-                }
-                soLuong = Integer.parseInt(so);
-                if (soLuong <= 0) {
-                    throw new NumberFormatException();
-                }
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "So luong khong de trong");
-                isOk = false;
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "So luong sai dinh dang");
-                isOk = false;
-            }
-            if (isOk) {
-                NhanVienBanHang nv = findByMa(maNV, listNV);
-                MatHang mh = findByMa(maMH, listMH);
-                DanhSachBanHang bh = new DanhSachBanHang(nv, mh, soLuong);
-                addToList(listBH, bh);
-                IOFile.writeFile(fileBH, listBH);
-                btnFalse();
-                clearData();
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Du lieu da ton tai");
-        }
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+        initCbData();
+        clearData();
+    }//GEN-LAST:event_btnThemActionPerformed
 
+    private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
+        // TODO add your handling code here:
+        int maNV = (int) cbNV.getSelectedItem();
+        int maMH = (int) cbMH.getSelectedItem();
+        int soLuong = Integer.parseInt(formatInputString(tfSoLuong.getText()));
+        if (isExistData(maNV, maMH)) {
+            updateExistData(maNV, maMH, soLuong);
+            showData(listBH, model);
+        } else {
+            NhanVien nhanVien = findByMa(maNV, listNV);
+            MatHang hang = findByMa(maMH, listMH);
+            BangDanhSachBanHang banHang = new BangDanhSachBanHang(nhanVien, hang, soLuong);
+            addToList(listBH, banHang);
+        }
+        clearData();
+        btnFalse();
+        IOFile.writeFile(FILEBH, listBH);
     }//GEN-LAST:event_btnLuuActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+        // TODO add your handling code here:
         btnFalse();
         clearData();
     }//GEN-LAST:event_btnHuyActionPerformed
 
-    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        clearData();
-        initCbData();
-    }//GEN-LAST:event_btnThemActionPerformed
-
-    private void rbtnTenNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnTenNVActionPerformed
-        try {
-            listBH = IOFile.readFile(fileBH);
-            if (listBH.isEmpty()) {
-                throw new InputMismatchException();
-            }
-            Collections.sort(listBH, (b1, b2) -> {
-                return b1.getNhanVienBanHang().getTen().compareToIgnoreCase(b2.getNhanVienBanHang().getTen());
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+        listBH = IOFile.readFile(FILEBH);
+        if(!listBH.isEmpty()){
+            Collections.sort(listBH, (bh1, bh2) -> {
+                return bh1.getNhanVien().getHoTen().compareToIgnoreCase(bh2.getNhanVien().getHoTen());
             });
             showData(listBH, model);
-        } catch (InputMismatchException e) {
-            JOptionPane.showMessageDialog(null, "Khong co du lieu");
+        } else {
             buttonGroup1.clearSelection();
         }
-    }//GEN-LAST:event_rbtnTenNVActionPerformed
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    private void rbtnTenMHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnTenMHActionPerformed
-        try {
-            listBH = IOFile.readFile(fileBH);
-            if(listBH.isEmpty())
-                throw new InputMismatchException();
-            Collections.sort(listBH, (b1, b2) -> {
-                return b1.getMatHang().getTen().compareToIgnoreCase(b2.getMatHang().getTen());
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        // TODO add your handling code here:
+        listBH = IOFile.readFile(FILEBH);
+        if(!listBH.isEmpty()){
+            Collections.sort(listBH, (bh1, bh2) -> {
+                return bh1.getHang().getTenHang().compareToIgnoreCase(bh2.getHang().getTenHang());
             });
             showData(listBH, model);
-        } catch (InputMismatchException e) {
-            JOptionPane.showMessageDialog(null, "Khong co du lieu");
+        } else {
             buttonGroup1.clearSelection();
         }
-    }//GEN-LAST:event_rbtnTenMHActionPerformed
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -382,16 +365,15 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
     private javax.swing.JComboBox<String> cbNV;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JRadioButton rbtnTenMH;
-    private javax.swing.JRadioButton rbtnTenNV;
     private javax.swing.JTable table;
-    private javax.swing.JTextField tfSo;
+    private javax.swing.JTextField tfSoLuong;
     // End of variables declaration//GEN-END:variables
-
     @Override
     public <T> void addToList(List<T> ls, T t) {
         ls.add(t);
@@ -402,8 +384,8 @@ public class FormBanHang extends javax.swing.JPanel implements ViewInterface {
     public <T> void showData(List<T> ls, DefaultTableModel md) {
         md.setRowCount(0);
         for (T t : ls) {
-            if (t instanceof DanhSachBanHang) {
-                md.addRow(((DanhSachBanHang) t).toObjects());
+            if (t instanceof BangDanhSachBanHang) {
+                md.addRow(((BangDanhSachBanHang) t).toObjects());
             }
         }
     }
